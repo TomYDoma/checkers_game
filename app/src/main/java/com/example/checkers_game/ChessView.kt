@@ -3,13 +3,15 @@ package com.example.checkers_game
 import  android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import kotlin.math.min
 
 class ChessView(context: Context?, attrs: AttributeSet?) : View(context, attrs)  {
-    private final val originX: Float = 20f
-    private final val originY: Float = 200f
-    private final val cellSide: Float = 130f //изменить для изменения размера клетки (85 для телефона, 130 для pixel 4a, api 33)
+    private final  val scaleFactor = .9f
+    private final var originX: Float = 20f
+    private final var originY: Float = 200f
+    private final var cellSide: Float = 130f //изменить для изменения размера клетки (85 для телефона, 130 для pixel 4a, api 33)
     private final val paint = Paint()
     private final val imgResIds = setOf(
             R.drawable.white_ordinary,
@@ -24,9 +26,16 @@ class ChessView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
     }
 
     override fun onDraw(canvas: Canvas?) {
+
+        Log.d(TAG, "${canvas?.width}, ${canvas?.height}")
+        canvas?.let {
+            val chessBoardSide = min(it.width, it.height) * scaleFactor
+            cellSide = chessBoardSide  / 8f
+            originX = (it.width - chessBoardSide) / 2f
+            originY= (it.height - chessBoardSide) / 2f
+        }
         drawableChessBoard(canvas)
         drawPieces(canvas)
-
     }
 
     private fun drawPieces(canvas: Canvas?){

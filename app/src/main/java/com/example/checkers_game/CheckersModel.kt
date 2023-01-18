@@ -10,20 +10,20 @@ class CheckersModel {
     private fun reset() {
         piecesBox.removeAll(piecesBox)
         for (i in 0..7 step 2){
-            piecesBox.add(CheckersPiece(0+i,0, CheckersPlayer.WHITE, CheckersRank.ORDINARY))
-            piecesBox.add(CheckersPiece(1+i,1, CheckersPlayer.WHITE, CheckersRank.ORDINARY))
-            piecesBox.add(CheckersPiece(0+i,2, CheckersPlayer.WHITE, CheckersRank.ORDINARY))
+            piecesBox.add(CheckersPiece(0+i,0, CheckersPlayer.WHITE, CheckersRank.ORDINARY, R.drawable.white_ordinary))
+            piecesBox.add(CheckersPiece(1+i,1, CheckersPlayer.WHITE, CheckersRank.ORDINARY, R.drawable.white_ordinary))
+            piecesBox.add(CheckersPiece(0+i,2, CheckersPlayer.WHITE, CheckersRank.ORDINARY, R.drawable.white_ordinary))
         }
         for (i in 0..7 step 2){
-            piecesBox.add(CheckersPiece(1+i,7, CheckersPlayer.BLACK, CheckersRank.ORDINARY))
-            piecesBox.add(CheckersPiece(0+i,6, CheckersPlayer.BLACK, CheckersRank.ORDINARY))
-            piecesBox.add(CheckersPiece(1+i,5, CheckersPlayer.BLACK, CheckersRank.ORDINARY))
+            piecesBox.add(CheckersPiece(1+i,7, CheckersPlayer.BLACK, CheckersRank.ORDINARY, R.drawable.black_ordinary))
+            piecesBox.add(CheckersPiece(0+i,6, CheckersPlayer.BLACK, CheckersRank.ORDINARY, R.drawable.black_ordinary))
+            piecesBox.add(CheckersPiece(1+i,5, CheckersPlayer.BLACK, CheckersRank.ORDINARY, R.drawable.black_ordinary))
         }
 
 
     }
 
-    private fun pieceAt(col: Int, row: Int) : CheckersPiece? {
+    fun pieceAt(col: Int, row: Int) : CheckersPiece? {
         for(piece in piecesBox){
             if (col == piece.col && row == piece.row) {
                 return piece

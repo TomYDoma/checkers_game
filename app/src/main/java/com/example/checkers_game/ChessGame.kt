@@ -22,7 +22,7 @@ object ChessGame {
             piecesBox.remove(it)
         }
         piecesBox.remove(movingPiece)
-        piecesBox.add(CheckersPiece(toCol, toRow, movingPiece.player, movingPiece.rank, movingPiece.resID))
+        piecesBox.add(movingPiece.copy(col = toCol, row = toRow))
 
     }
 
@@ -56,21 +56,14 @@ object ChessGame {
         for (row in 7 downTo 0) {
             desc += "$row"
             for (col in 0..7) {
-                val piece = pieceAt(col, row)
-                if (piece == null) {
-                    desc += " ."
-                } else {
-                    val white = piece.player == CheckersPlayer.WHITE
-                    desc += " "
-                    desc += when (piece.rank) {
-                        Checkersman.ORDINARY -> {
-                            if (white) "б" else "ч"
-                        }
-                        Checkersman.KING -> {
-                            if (white) "д" else "Д"
-                        }
+                desc += " "
+                desc += pieceAt(col, row)?.let {
+                    val white = it.player == CheckersPlayer.WHITE
+                    when (it.rank) {
+                        Checkersman.ORDINARY -> if (white) "б" else "ч"
+                        Checkersman.KING -> if (white) "д" else "Д"
                     }
-                }
+                } ?: "."
             }
             desc += "\n"
         }

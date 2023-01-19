@@ -1,6 +1,7 @@
 package com.example.checkers_game
 
 
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -16,37 +17,51 @@ const val  TAG = "MainActivity"
 class MainActivity : AppCompatActivity(), CheckersDelegate {
 
     private lateinit var ChessView: ChessView
+    private lateinit var resetButtons: Button
+    private lateinit var listenButtons: Button
+    private lateinit var connectButtons: Button
+
     private var printWriter: PrintWriter? = null
-    private val PORT: Int = 50001
+    private val socketPort: Int = 50000 //для телефона
+    private val socketGuestPort: Int = 50001 //для эмулятора
+    private val socketHost = "127.0.0.1"
+
+    private val isEmulator = Build.FINGERPRINT.contains("generic")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         ChessView = findViewById<ChessView>(R.id.checkers_view)
+        resetButtons = findViewById<Button>(R.id.reset_button)
+        listenButtons = findViewById<Button>(R.id.listen_buttons)
+        connectButtons = findViewById<Button>(R.id.connect_buttons)
+
         ChessView.CheckersDelegate = this
 
         //Кнопка сброса
 
-        findViewById<Button>(R.id.reset_button).setOnClickListener {
+        resetButtons.setOnClickListener {
             ChessGame.reset()
             ChessView.invalidate()
         }
 
-        findViewById<Button>(R.id.listen_buttons).setOnClickListener {
-            Log.d(TAG, "socket server listening on port ...")
+        listenButtons.setOnClickListener {
+            listenButtons.isEnabled = false
+            val port = if (isEmulator) socketGuestPort else socketPort
+            Log.d(TAG, "socket server listening on $port")
             Executors.newSingleThreadExecutor().execute {
-                val serverSocket = ServerSocket(PORT)
+                val serverSocket = ServerSocket(port)
                 val socket = serverSocket.accept()
                 receiveMove(socket)
             }
 
         }
 
-        findViewById<Button>(R.id.connect_buttons).setOnClickListener {
-            Log.d(TAG, "socket client connecting to addr:port ...")
+        connectButtons.setOnClickListener {
+            Log.d(TAG, "socket client connecting ...")
             Executors.newSingleThreadExecutor().execute {
-                val socket = Socket("192.168.0.17", PORT)
+                val socket = Socket(socketHost, socketPort)
                 receiveMove(socket)
             }
         }

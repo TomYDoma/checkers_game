@@ -6,9 +6,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.Toast
 import java.io.PrintWriter
+import java.net.ConnectException
 import java.net.ServerSocket
 import java.net.Socket
+import java.net.SocketException
 import java.util.Scanner
 import java.util.concurrent.Executors
 
@@ -25,7 +28,7 @@ class MainActivity : AppCompatActivity(), CheckersDelegate {
     private val socketPort: Int = 50000 //для телефона
     private val socketGuestPort: Int = 50001 //для эмулятора
     private val socketHost = "127.0.0.1"
-
+    private  var serverSocket: ServerSocket? = null
     private val isEmulator = Build.FINGERPRINT.contains("generic")
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,16 +47,26 @@ class MainActivity : AppCompatActivity(), CheckersDelegate {
         resetButtons.setOnClickListener {
             ChessGame.reset()
             ChessView.invalidate()
+            serverSocket?.close()
+            listenButtons.isEnabled = true
         }
 
         listenButtons.setOnClickListener {
             listenButtons.isEnabled = false
             val port = if (isEmulator) socketGuestPort else socketPort
-            Log.d(TAG, "socket server listening on $port")
+            Toast.makeText(this, "listening on $port", Toast.LENGTH_SHORT).show()
             Executors.newSingleThreadExecutor().execute {
-                val serverSocket = ServerSocket(port)
-                val socket = serverSocket.accept()
-                receiveMove(socket)
+                ServerSocket(port).let { srvSKT ->
+                    serverSocket = srvSKT
+                    try {
+                        val socket = srvSKT.accept()
+                        receiveMove(socket)
+                    } catch (e: SocketException){
+                        // ignored, socket closed
+                    }
+
+                }
+
             }
 
         }
@@ -61,8 +74,16 @@ class MainActivity : AppCompatActivity(), CheckersDelegate {
         connectButtons.setOnClickListener {
             Log.d(TAG, "socket client connecting ...")
             Executors.newSingleThreadExecutor().execute {
-                val socket = Socket(socketHost, socketPort)
-                receiveMove(socket)
+                try{
+                    val socket = Socket(socketHost, socketPort)
+                    receiveMove(socket)
+                } catch (e: ConnectException){
+                    runOnUiThread {
+                        Toast.makeText(this, "connection failed", Toast.LENGTH_SHORT).show()
+                    }
+
+                }
+
             }
         }
     }

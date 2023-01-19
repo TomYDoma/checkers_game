@@ -1,8 +1,6 @@
 package com.example.checkers_game
 
-import android.util.Log
-
-class CheckersModel {
+object ChessGame {
     var piecesBox = mutableSetOf<CheckersPiece>()
 
     init {
@@ -31,14 +29,14 @@ class CheckersModel {
     fun reset() {
         piecesBox.removeAll(piecesBox)
         for (i in 0..7 step 2){
-            piecesBox.add(CheckersPiece(0+i,0, CheckersPlayer.WHITE, CheckersRank.ORDINARY, R.drawable.white_ordinary))
-            piecesBox.add(CheckersPiece(1+i,1, CheckersPlayer.WHITE, CheckersRank.ORDINARY, R.drawable.white_ordinary))
-            piecesBox.add(CheckersPiece(0+i,2, CheckersPlayer.WHITE, CheckersRank.ORDINARY, R.drawable.white_ordinary))
+            piecesBox.add(CheckersPiece(0+i,0, CheckersPlayer.WHITE, Checkersman.ORDINARY, R.drawable.white_ordinary))
+            piecesBox.add(CheckersPiece(1+i,1, CheckersPlayer.WHITE, Checkersman.ORDINARY, R.drawable.white_ordinary))
+            piecesBox.add(CheckersPiece(0+i,2, CheckersPlayer.WHITE, Checkersman.ORDINARY, R.drawable.white_ordinary))
         }
         for (i in 0..7 step 2){
-            piecesBox.add(CheckersPiece(1+i,7, CheckersPlayer.BLACK, CheckersRank.ORDINARY, R.drawable.black_ordinary))
-            piecesBox.add(CheckersPiece(0+i,6, CheckersPlayer.BLACK, CheckersRank.ORDINARY, R.drawable.black_ordinary))
-            piecesBox.add(CheckersPiece(1+i,5, CheckersPlayer.BLACK, CheckersRank.ORDINARY, R.drawable.black_ordinary))
+            piecesBox.add(CheckersPiece(1+i,7, CheckersPlayer.BLACK, Checkersman.ORDINARY, R.drawable.black_ordinary))
+            piecesBox.add(CheckersPiece(0+i,6, CheckersPlayer.BLACK, Checkersman.ORDINARY, R.drawable.black_ordinary))
+            piecesBox.add(CheckersPiece(1+i,5, CheckersPlayer.BLACK, Checkersman.ORDINARY, R.drawable.black_ordinary))
         }
 
 
@@ -65,10 +63,10 @@ class CheckersModel {
                     val white = piece.player == CheckersPlayer.WHITE
                     desc += " "
                     desc += when (piece.rank) {
-                        CheckersRank.ORDINARY -> {
+                        Checkersman.ORDINARY -> {
                             if (white) "б" else "ч"
                         }
-                        CheckersRank.KING -> {
+                        Checkersman.KING -> {
                             if (white) "д" else "Д"
                         }
                     }

@@ -26,19 +26,17 @@ class ChessView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
     }
 
     override fun onDraw(canvas: Canvas?) {
+        canvas ?: return
+        val chessBoardSide = min(canvas.width, canvas.height) * scaleFactor
+        cellSide = chessBoardSide  / 8f
+        originX = (canvas.width - chessBoardSide) / 2f
+        originY= (canvas.height - chessBoardSide) / 2f
 
-        Log.d(TAG, "${canvas?.width}, ${canvas?.height}")
-        canvas?.let {
-            val chessBoardSide = min(it.width, it.height) * scaleFactor
-            cellSide = chessBoardSide  / 8f
-            originX = (it.width - chessBoardSide) / 2f
-            originY= (it.height - chessBoardSide) / 2f
-        }
         drawableChessBoard(canvas)
         drawPieces(canvas)
     }
 
-    private fun drawPieces(canvas: Canvas?){
+    private fun drawPieces(canvas: Canvas){
 
         for (row in 0..7){
             for (col in 0..7){
@@ -49,9 +47,9 @@ class ChessView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
 
     }
 
-    private fun drawPiecesAt(canvas: Canvas?, col: Int, row: Int, resId: Int){
+    private fun drawPiecesAt(canvas: Canvas, col: Int, row: Int, resId: Int){
         val bitmap = bitmaps[resId]!!
-        canvas?.drawBitmap(bitmap, null, RectF(originX + col * cellSide,originY + (7 - row) * cellSide,originX + (col + 1) * cellSide,originY + ((7 - row) + 1) * cellSide), paint)
+        canvas.drawBitmap(bitmap, null, RectF(originX + col * cellSide,originY + (7 - row) * cellSide,originX + (col + 1) * cellSide,originY + ((7 - row) + 1) * cellSide), paint)
     }
 
     private fun  loadBitmaps(){
@@ -61,7 +59,7 @@ class ChessView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
     }
 
     //Рисование доски
-    private fun drawableChessBoard(canvas: Canvas?){
+    private fun drawableChessBoard(canvas: Canvas){
         for (row in 0..7){
             for (col in 0..7){
                drawSquareAt(canvas, col, row, (col + row) % 2 == 1)
@@ -69,9 +67,9 @@ class ChessView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
         }
     }
     //Рисование квадратов
-    private fun drawSquareAt(canvas: Canvas?, col: Int, row: Int, isDark:Boolean){
+    private fun drawSquareAt(canvas: Canvas, col: Int, row: Int, isDark:Boolean){
         paint.color = if  (isDark) Color.DKGRAY else Color.LTGRAY
-        canvas?.drawRect(originX + col * cellSide, originY + row * cellSide,originX + (col + 1) * cellSide, originY + (row + 1) * cellSide, paint)
+        canvas.drawRect(originX + col * cellSide, originY + row * cellSide,originX + (col + 1) * cellSide, originY + (row + 1) * cellSide, paint)
 
 
     }

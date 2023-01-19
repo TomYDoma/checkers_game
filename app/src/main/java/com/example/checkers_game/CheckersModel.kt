@@ -1,10 +1,35 @@
 package com.example.checkers_game
 
+import android.util.Log
+
 class CheckersModel {
     var piecesBox = mutableSetOf<CheckersPiece>()
 
     init {
         reset()
+        // TODO
+        Log.d(TAG, "${piecesBox.size}")
+        movePiece(0, 2,0,6)
+        movePiece(0, 6,1,3)
+
+        Log.d(TAG, toString())
+        Log.d(TAG, "${piecesBox.size}")
+    }
+
+    fun movePiece(fromCol: Int, fromRow: Int, toCol: Int, toRow: Int){
+        val movingPiece = pieceAt(fromCol, fromRow) ?: return
+
+        pieceAt(toCol, toRow)?.let {
+            if (it.player == movingPiece.player){
+                return
+            }
+            piecesBox.remove(it)
+        }
+        movingPiece.col = toCol
+        movingPiece.row = toRow
+
+
+
     }
 
     private fun reset() {
@@ -45,7 +70,7 @@ class CheckersModel {
                     desc += " "
                     desc += when (piece.rank) {
                         CheckersRank.ORDINARY -> {
-                            if (white) "ш" else "Ш"
+                            if (white) "б" else "ч"
                         }
                         CheckersRank.KING -> {
                             if (white) "д" else "Д"

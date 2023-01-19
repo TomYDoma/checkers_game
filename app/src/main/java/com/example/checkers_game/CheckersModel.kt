@@ -7,14 +7,11 @@ class CheckersModel {
 
     init {
         reset()
-        // TODO
-        Log.d(TAG, "${piecesBox.size}")
-        movePiece(0, 2,0,6)
-        movePiece(0, 6,1,3)
-
-        Log.d(TAG, toString())
-        Log.d(TAG, "${piecesBox.size}")
     }
+
+
+
+
 
     fun movePiece(fromCol: Int, fromRow: Int, toCol: Int, toRow: Int){
         val movingPiece = pieceAt(fromCol, fromRow) ?: return

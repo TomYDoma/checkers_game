@@ -4,22 +4,26 @@ import  android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import kotlin.math.min
 
 class ChessView(context: Context?, attrs: AttributeSet?) : View(context, attrs)  {
-    private final  val scaleFactor = .9f
-    private final var originX: Float = 20f
-    private final var originY: Float = 200f
-    private final var cellSide: Float = 130f //изменить для изменения размера клетки (85 для телефона, 130 для pixel 4a, api 33)
-    private final val paint = Paint()
-    private final val imgResIds = setOf(
+    private val scaleFactor = .9f //изменить для изменения размера клетки
+    private var originX: Float = 20f
+    private var originY: Float = 200f
+    private var cellSide: Float = 130f
+    private val paint = Paint()
+    private val imgResIds = setOf(
             R.drawable.white_ordinary,
             R.drawable.black_ordinary,
             R.drawable.black_king,
             R.drawable.white_king
     )
-    private final val bitmaps = mutableMapOf<Int, Bitmap>()
+    private  val bitmaps = mutableMapOf<Int, Bitmap>()
+    private var fromCol: Int = -1
+    private var fromRow: Int = -1
+
     var CheckersDelegate: CheckersDelegate? = null
     init {
         loadBitmaps()
@@ -27,14 +31,40 @@ class ChessView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
 
     override fun onDraw(canvas: Canvas?) {
         canvas ?: return
-        val chessBoardSide = min(canvas.width, canvas.height) * scaleFactor
+        val chessBoardSide = min(width, height) * scaleFactor
         cellSide = chessBoardSide  / 8f
-        originX = (canvas.width - chessBoardSide) / 2f
-        originY= (canvas.height - chessBoardSide) / 2f
+        originX = (width - chessBoardSide) / 2f
+        originY= (height - chessBoardSide) / 2f
 
         drawableChessBoard(canvas)
         drawPieces(canvas)
     }
+
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        event ?: return false
+
+        when (event.action){
+            MotionEvent.ACTION_DOWN -> {
+                fromCol = ((event.x - originX) / cellSide).toInt()
+                fromRow = 7 - ((event.y - originY) / cellSide).toInt()
+
+            }
+
+            MotionEvent.ACTION_MOVE -> {
+                //Log.d(TAG, "move")
+            }
+
+            MotionEvent.ACTION_UP -> {
+                val col = ((event.x - originX) / cellSide).toInt()
+                val row = 7 - ((event.y - originY) / cellSide).toInt()
+                Log.d(TAG, "from ($fromCol, $fromRow) to  ($col, $row)")
+                CheckersDelegate?.movePiece(fromCol, fromRow, col, row)
+            }
+        }
+        return true
+    }
+
 
     private fun drawPieces(canvas: Canvas){
 

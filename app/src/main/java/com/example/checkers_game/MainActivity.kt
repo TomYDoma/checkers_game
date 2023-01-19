@@ -27,4 +27,10 @@ class MainActivity : AppCompatActivity(), CheckersDelegate {
     override fun pieceAt(col: Int, row: Int): CheckersPiece? {
         return CheckersModel.pieceAt(col, row)
     }
+
+    override fun movePiece(fromCol: Int, fromRow: Int, toCol: Int, toRow: Int) {
+        CheckersModel.movePiece(fromCol, fromRow, toCol, toRow)
+        val ChessView = findViewById<ChessView>(R.id.checkers_view)
+        ChessView.invalidate()
+    }
 }

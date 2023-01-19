@@ -7,10 +7,6 @@ object ChessGame {
         reset()
     }
 
-
-
-
-
     fun movePiece(fromCol: Int, fromRow: Int, toCol: Int, toRow: Int){
         if (fromCol == toCol && fromRow == toRow) return
         val movingPiece = pieceAt(fromCol, fromRow) ?: return
@@ -29,14 +25,14 @@ object ChessGame {
     fun reset() {
         piecesBox.removeAll(piecesBox)
         for (i in 0..7 step 2){
-            piecesBox.add(CheckersPiece(0+i,0, CheckersPlayer.WHITE, Checkersman.ORDINARY, R.drawable.white_ordinary))
-            piecesBox.add(CheckersPiece(1+i,1, CheckersPlayer.WHITE, Checkersman.ORDINARY, R.drawable.white_ordinary))
-            piecesBox.add(CheckersPiece(0+i,2, CheckersPlayer.WHITE, Checkersman.ORDINARY, R.drawable.white_ordinary))
+            piecesBox.add(CheckersPiece(0+i,0, Player.WHITE, Checkersman.ORDINARY, R.drawable.white_ordinary))
+            piecesBox.add(CheckersPiece(1+i,1, Player.WHITE, Checkersman.ORDINARY, R.drawable.white_ordinary))
+            piecesBox.add(CheckersPiece(0+i,2, Player.WHITE, Checkersman.ORDINARY, R.drawable.white_ordinary))
         }
         for (i in 0..7 step 2){
-            piecesBox.add(CheckersPiece(1+i,7, CheckersPlayer.BLACK, Checkersman.ORDINARY, R.drawable.black_ordinary))
-            piecesBox.add(CheckersPiece(0+i,6, CheckersPlayer.BLACK, Checkersman.ORDINARY, R.drawable.black_ordinary))
-            piecesBox.add(CheckersPiece(1+i,5, CheckersPlayer.BLACK, Checkersman.ORDINARY, R.drawable.black_ordinary))
+            piecesBox.add(CheckersPiece(1+i,7, Player.BLACK, Checkersman.ORDINARY, R.drawable.black_ordinary))
+            piecesBox.add(CheckersPiece(0+i,6, Player.BLACK, Checkersman.ORDINARY, R.drawable.black_ordinary))
+            piecesBox.add(CheckersPiece(1+i,5, Player.BLACK, Checkersman.ORDINARY, R.drawable.black_ordinary))
         }
 
 
@@ -55,19 +51,26 @@ object ChessGame {
         var desc = " \n"
         for (row in 7 downTo 0) {
             desc += "$row"
-            for (col in 0..7) {
-                desc += " "
-                desc += pieceAt(col, row)?.let {
-                    val white = it.player == CheckersPlayer.WHITE
-                    when (it.rank) {
-                        Checkersman.ORDINARY -> if (white) "б" else "ч"
-                        Checkersman.KING -> if (white) "д" else "Д"
-                    }
-                } ?: "."
-            }
+            desc += boardRow(row)
             desc += "\n"
         }
         desc += "  0 1 2 3 4 5 6 7"
+
+        return desc
+    }
+
+    private fun boardRow(row: Int): String {
+        var desc =""
+        for (col in 0..7) {
+            desc += " "
+            desc += pieceAt(col, row)?.let {
+                val white = it.player == Player.WHITE
+                when (it.rank) {
+                    Checkersman.ORDINARY -> if (white) "б" else "ч"
+                    Checkersman.KING -> if (white) "д" else "Д"
+                }
+            } ?: "."
+        }
 
         return desc
     }

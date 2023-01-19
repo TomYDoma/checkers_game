@@ -1,6 +1,6 @@
 package com.example.checkers_game
 
-enum class Checkersman {
+enum class Chessman {
     ORDINARY,
     KING
 }

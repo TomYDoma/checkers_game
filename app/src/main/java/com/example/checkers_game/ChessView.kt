@@ -3,7 +3,6 @@ package com.example.checkers_game
 import  android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import kotlin.math.min
@@ -30,7 +29,7 @@ class ChessView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
     private var movingPieceX: Float = -1f
     private var movingPieceY: Float = -1f
 
-    var CheckersDelegate: CheckersDelegate? = null
+    var ChessDelegate: ChessDelegate? = null
     init {
         loadBitmaps()
     }
@@ -61,7 +60,7 @@ class ChessView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
                 fromCol = ((event.x - originX) / cellSide).toInt()
                 fromRow = 7 - ((event.y - originY) / cellSide).toInt()
 
-                CheckersDelegate?.pieceAt(fromCol, fromRow)?.let {
+                ChessDelegate?.pieceAt(Square(fromCol, fromRow))?.let {
                     movingPiece = it
                     movingPieceBitmap = bitmaps[it.resID]
                 }
@@ -77,7 +76,7 @@ class ChessView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
                 val col = ((event.x - originX) / cellSide).toInt()
                 val row = 7 - ((event.y - originY) / cellSide).toInt()
                 if (fromCol != col || fromRow != row) {
-                    CheckersDelegate?.movePiece(fromCol, fromRow, col, row)
+                    ChessDelegate?.movePiece(Square(fromCol, fromRow), Square(col, row))
                 }
 
                 movingPiece = null
@@ -93,7 +92,7 @@ class ChessView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
 
         for (row in 0..7){
             for (col in 0..7){
-                CheckersDelegate?.pieceAt(col, row)?.let {
+                ChessDelegate?.pieceAt(Square(col, row))?.let {
                     if (it != movingPiece){
                         drawPiecesAt(canvas, col, row, it.resID) }
                     }

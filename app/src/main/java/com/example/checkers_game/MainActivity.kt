@@ -17,7 +17,7 @@ import java.util.concurrent.Executors
 
 const val  TAG = "MainActivity"
 
-class MainActivity : AppCompatActivity(), CheckersDelegate {
+class MainActivity : AppCompatActivity(), ChessDelegate {
 
     private lateinit var ChessView: ChessView
     private lateinit var resetButtons: Button
@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity(), CheckersDelegate {
         listenButtons = findViewById<Button>(R.id.listen_buttons)
         connectButtons = findViewById<Button>(R.id.connect_buttons)
 
-        ChessView.CheckersDelegate = this
+        ChessView.ChessDelegate = this
 
         //Кнопка сброса
 
@@ -94,25 +94,21 @@ class MainActivity : AppCompatActivity(), CheckersDelegate {
         while (scanner.hasNextLine()) {
             val move: List<Int> =  scanner.nextLine().split(",").map { it.toInt() }
             runOnUiThread {
-                ChessGame.movePiece(move[0], move[1], move[2], move[3])
+                ChessGame.movePiece(Square(move[0], move[1]), Square(move[2], move[3]))
                 ChessView.invalidate()
             }
         }
     }
 
-    override fun pieceAt(col: Int, row: Int): CheckersPiece? {
-        return ChessGame.pieceAt(col, row)
-    }
+    override fun pieceAt(square: Square): CheckersPiece? = ChessGame.pieceAt(square)
 
-    override fun movePiece(fromCol: Int, fromRow: Int, toCol: Int, toRow: Int) {
-        if (fromCol == toCol && fromRow == toRow){
-            return
-        }
-        ChessGame.movePiece(fromCol, fromRow, toCol, toRow)
+
+    override fun movePiece(from: Square, to: Square) {
+        ChessGame.movePiece(from, to)
         ChessView.invalidate()
 
         printWriter?.let {
-            val moveStr = "$fromCol,$fromRow,$toCol,$toRow"
+            val moveStr = "${from.col},${from.row},${to.col}.,${to.row}"
             Executors.newSingleThreadExecutor().execute {
                 it.println(moveStr)
             }

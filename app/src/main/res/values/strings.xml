@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">checkers_game</string>
+    <string name="app_name">Шашки</string>
+    <string name="reset_buttons">Сброс</string>
 </resources>

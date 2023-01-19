@@ -4,24 +4,29 @@ package com.example.checkers_game
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 
 const val  TAG = "MainActivity"
 
-/*
-    MVC: Model View Controller
- */
-
 class MainActivity : AppCompatActivity(), CheckersDelegate {
 
-    var CheckersModel = CheckersModel()
+    private var CheckersModel = CheckersModel()
+    private lateinit var ChessView: ChessView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-       Log.d(TAG, "$CheckersModel")
-        val ChessView = findViewById<ChessView>(R.id.checkers_view)
+        ChessView = findViewById<ChessView>(R.id.checkers_view)
         ChessView.CheckersDelegate = this
+
+        //Кнопка сброса
+
+        findViewById<Button>(R.id.reset_button).setOnClickListener {
+            CheckersModel.reset()
+            ChessView.invalidate()
+
+        }
     }
 
     override fun pieceAt(col: Int, row: Int): CheckersPiece? {
@@ -30,7 +35,6 @@ class MainActivity : AppCompatActivity(), CheckersDelegate {
 
     override fun movePiece(fromCol: Int, fromRow: Int, toCol: Int, toRow: Int) {
         CheckersModel.movePiece(fromCol, fromRow, toCol, toRow)
-        val ChessView = findViewById<ChessView>(R.id.checkers_view)
-        ChessView.invalidate()
+        findViewById<ChessView>(R.id.checkers_view).invalidate()
     }
 }

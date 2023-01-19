@@ -14,6 +14,7 @@ class CheckersModel {
 
 
     fun movePiece(fromCol: Int, fromRow: Int, toCol: Int, toRow: Int){
+        if (fromCol == toCol && fromRow == toRow) return
         val movingPiece = pieceAt(fromCol, fromRow) ?: return
 
         pieceAt(toCol, toRow)?.let {
@@ -22,14 +23,12 @@ class CheckersModel {
             }
             piecesBox.remove(it)
         }
-        movingPiece.col = toCol
-        movingPiece.row = toRow
-
-
+        piecesBox.remove(movingPiece)
+        piecesBox.add(CheckersPiece(toCol, toRow, movingPiece.player, movingPiece.rank, movingPiece.resID))
 
     }
 
-    private fun reset() {
+    fun reset() {
         piecesBox.removeAll(piecesBox)
         for (i in 0..7 step 2){
             piecesBox.add(CheckersPiece(0+i,0, CheckersPlayer.WHITE, CheckersRank.ORDINARY, R.drawable.white_ordinary))

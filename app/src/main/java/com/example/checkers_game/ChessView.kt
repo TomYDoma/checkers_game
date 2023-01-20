@@ -96,10 +96,8 @@ class ChessView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
                     if (it != movingPiece){
                         drawPiecesAt(canvas, col, row, it.resID) }
                     }
-
             }
         }
-
         movingPieceBitmap?.let {
             canvas.drawBitmap(it, null, RectF(movingPieceX - cellSide / 2,
                 movingPieceY - cellSide / 2,movingPieceX + cellSide/2,
@@ -132,8 +130,6 @@ class ChessView(context: Context?, attrs: AttributeSet?) : View(context, attrs) 
     private fun drawSquareAt(canvas: Canvas, col: Int, row: Int, isDark:Boolean){
         paint.color = if  (isDark) Color.DKGRAY else Color.LTGRAY
         canvas.drawRect(originX + col * cellSide, originY + row * cellSide,originX + (col + 1) * cellSide, originY + (row + 1) * cellSide, paint)
-
-
     }
 
 }

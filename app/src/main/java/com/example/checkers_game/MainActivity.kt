@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity(), ChessDelegate {
     private var printWriter: PrintWriter? = null
     private val socketPort: Int = 50000 //для телефона
     private val socketGuestPort: Int = 50001 //для эмулятора
-    private val socketHost = "127.0.0.1"
+    private val socketHost = "192.168.0.16"
     private  var serverSocket: ServerSocket? = null
     private val isEmulator = Build.FINGERPRINT.contains("generic")
 
@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity(), ChessDelegate {
         val scanner = Scanner(socket.getInputStream())
         printWriter = PrintWriter(socket.getOutputStream(), true)
         while (scanner.hasNextLine()) {
-            val move: List<Int> =  scanner.nextLine().split(",").map { it.toInt() }
+            val move =  scanner.nextLine().split(",").map { it.toInt() }
             runOnUiThread {
                 ChessGame.movePiece(Square(move[0], move[1]), Square(move[2], move[3]))
                 ChessView.invalidate()

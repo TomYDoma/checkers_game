@@ -1,5 +1,7 @@
 package com.example.checkers_game
 
+import kotlin.math.abs
+
 object ChessGame {
     private var piecesBox = mutableSetOf<CheckersPiece>()
 
@@ -8,7 +10,8 @@ object ChessGame {
     }
 
     fun clear(){
-        piecesBox.removeAll(piecesBox)
+        //piecesBox.removeAll(piecesBox)
+        piecesBox.clear()
     }
 
     fun addPiece(piece: CheckersPiece){
@@ -16,12 +19,55 @@ object ChessGame {
 
     }
 
-    fun canKnight(from: Square, to: Square): Boolean{
+    private fun isClearDiagonally(from: Square, to: Square): Boolean {
+        if (abs(from.col - to.col) != abs(from.row - to.row)) return false
+        val gap = abs(from.col - to.col) - 1
+        for (i in 1..gap) {
+            val nextCol = if (to.col > from.col) from.col + i else from.col - i
+            val nextRow = if (to.row > from.row) from.row + i else from.row - i
+            if (pieceAt(nextCol, nextRow) != null) {
+                return false
+            }
+        }
+        return true
+    }
+
+
+    fun canOrdinaryWhite(from: Square, to: Square): Boolean{
+        if (abs(from.col - to.col) == 1 &&  (from.row - to.row) == -1){
+            return isClearDiagonally(from, to)
+        }
         return false
     }
 
+    fun canOrdinaryBlack(from: Square, to: Square): Boolean{
+        if (abs(from.col - to.col) == 1 &&  (from.row - to.row) == 1){
+            return isClearDiagonally(from, to)
+        }
+        return false
+    }
+
+    fun canKing(from: Square, to: Square): Boolean{
+        if (abs(from.col - to.col) == abs(from.row - to.row)) {
+            return isClearDiagonally(from, to)
+        }
+        return false
+    }
+
+    fun canMove(from: Square, to: Square): Boolean{
+        val movingPiece = pieceAt(from) ?: return false
+        when(movingPiece.player) {
+            Player.WHITE -> return canOrdinaryWhite(from, to)
+            Player.BLACK -> return canOrdinaryBlack(from, to)
+        }
+        return true
+    }
+
     fun movePiece(from: Square, to: Square){
-        movePiece(from.col, from.row, to.col, to.row)
+        if (canMove(from, to)) {
+            movePiece(from.col, from.row, to.col, to.row)
+        }
+
     }
 
     private fun movePiece(fromCol: Int, fromRow: Int, toCol: Int, toRow: Int){
@@ -60,6 +106,7 @@ object ChessGame {
     fun pieceAt(square: Square): CheckersPiece? {
         return pieceAt(square.col, square.row)
     }
+
 
     private fun pieceAt(col: Int, row: Int): CheckersPiece? {
         for(piece in piecesBox){
